@@ -1,0 +1,25 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "src/assets/fonts/Space-Bold.ttf",
+      "sha1": "b2aa14fa837cf3ed5e647c87906e88238d88c548"
+    },
+    {
+      "path": "src/assets/fonts/Space-Light.ttf",
+      "sha1": "37a7dffc1d580f94f9204b8a90f6c60bed9f500e"
+    },
+    {
+      "path": "src/assets/fonts/Space-Medium.ttf",
+      "sha1": "53a82dc42149eb575e8e38dcd0c618899e7e8b8f"
+    },
+    {
+      "path": "src/assets/fonts/Space-Regular.ttf",
+      "sha1": "d1666e3605d713802650ab26c0914238ca124274"
+    },
+    {
+      "path": "src/assets/fonts/Space-SemiBold.ttf",
+      "sha1": "0f5ec8c385c42b65cd8bcb494f26e9c282d6a107"
+    }
+  ]
+}
