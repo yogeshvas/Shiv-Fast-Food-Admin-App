@@ -8,10 +8,11 @@ import {
   Platform,
   UIManager,
   Image,
-  Alert,
+  Linking,
 } from 'react-native';
 import moment from 'moment';
 import useUpdateOrderStaus from '../services/hooks/useUpdateOrderStaus';
+
 // Enable LayoutAnimation on Android
 if (
   Platform.OS === 'android' &&
@@ -58,6 +59,10 @@ const OrderAccordion = ({data, refetch}: any) => {
         },
       },
     );
+  };
+
+  const handlePhonePress = () => {
+    Linking.openURL(`tel:+91${data?.customerPhoneNo}`);
   };
 
   return (
@@ -193,6 +198,7 @@ const OrderAccordion = ({data, refetch}: any) => {
               <View>
                 {data?.items.map(food => (
                   <View
+                    key={food._id}
                     style={{
                       flexDirection: 'row',
                       justifyContent: 'space-between',
@@ -259,6 +265,41 @@ const OrderAccordion = ({data, refetch}: any) => {
                   </Text>
                 </View>
               </View>
+              {/* phone no */}
+              <View
+                style={{
+                  borderTopWidth: 1,
+                  borderColor: 'gray',
+                  marginTop: 5,
+                  paddingTop: 10,
+                  paddingHorizontal: 20,
+                }}>
+                <View>
+                  <Text style={{fontFamily: 'Space-Bold', color: 'gray'}}>
+                    Phone :
+                  </Text>
+                  <TouchableOpacity
+                    style={{
+                      flexDirection: 'row',
+                      gap: 5,
+                      alignItems: 'center',
+                    }}
+                    onPress={handlePhonePress}>
+                    <Text
+                      style={{
+                        fontFamily: 'Space-Bold',
+                        color: '#596FB7',
+                        fontSize: 16,
+                      }}>
+                      {data?.customerPhoneNo}
+                    </Text>
+                    <Image
+                      style={{height: 15, width: 15}}
+                      source={require('../assets/images/maximize.png')}
+                    />
+                  </TouchableOpacity>
+                </View>
+              </View>
               {/* address */}
 
               <View
@@ -283,11 +324,12 @@ const OrderAccordion = ({data, refetch}: any) => {
                   </Text>
                 </View>
               </View>
+
               {/* button */}
               <View>
                 <TouchableOpacity
                   onPress={handleUpdateStatus}
-                  disabled={data?.status === 'DELIVERED'} // Check for exact mat
+                  disabled={data?.status === 'DELIVERED'} // Check for exact match
                   style={{
                     backgroundColor:
                       data?.status === 'DELIVERED' ? 'gray' : '#597445',

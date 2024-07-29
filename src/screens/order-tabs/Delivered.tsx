@@ -34,6 +34,11 @@ const Delivered = () => {
         renderItem={({item}) => (
           <OrderAccordion data={item} refetch={refetch} />
         )}
+        ListEmptyComponent={
+          <View style={styles.emptyContainer}>
+            <Text style={styles.emptyText}>No Accepted Orders</Text>
+          </View>
+        }
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
