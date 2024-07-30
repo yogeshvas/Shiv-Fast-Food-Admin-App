@@ -13,7 +13,7 @@ import MenuCards from '../components/MenuCards';
 import useGetMenu from '../services/hooks/useGetMenu';
 
 const MenuManagement = ({navigation}: any) => {
-  const {data, refetch} = useGetMenu();
+  const {data, refetch, isLoading} = useGetMenu();
   const [refreshing, setRefreshing] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -31,6 +31,15 @@ const MenuManagement = ({navigation}: any) => {
     <MenuCards data={item} refetch={refetch} />
   );
 
+  if (isLoading) {
+    return (
+      <>
+        <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+          <Text style={{color: 'black'}}>Loading Menu...</Text>
+        </View>
+      </>
+    );
+  }
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -77,6 +86,7 @@ export default MenuManagement;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: 'white',
   },
   header: {
     height: 70,

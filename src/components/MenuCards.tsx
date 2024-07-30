@@ -105,6 +105,7 @@ const MenuCards = ({data, refetch}: any) => {
               borderWidth: 1,
               borderRadius: 10,
               width: '80%',
+              color: 'black',
               borderColor: 'gray',
               paddingHorizontal: 10,
             }}
