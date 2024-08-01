@@ -21,7 +21,15 @@ const All = () => {
   );
 
   if (isLoading) {
-    return <Text>Loading...</Text>;
+    return (
+      <>
+        <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+          <Text style={{color: 'black', fontFamily: 'Space-Bold'}}>
+            Loading...
+          </Text>
+        </View>
+      </>
+    );
   }
   const reversedOrders = [...data.allOrders].reverse();
   return (

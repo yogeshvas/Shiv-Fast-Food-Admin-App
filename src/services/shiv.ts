@@ -52,3 +52,17 @@ export const getKitchenStatus = async () => {
   const response = await apiClient.get('/api/v1/kitchen');
   return response.data;
 };
+
+export const getMenu = async () => {
+  const response = await apiClient.get('/api/v1/menu/get-item');
+  return response.data;
+};
+
+export const updateMenu = async (id: any, price: any, availability: any) => {
+  const response = await apiClient.patch('/api/v1/menu/update-item', {
+    id,
+    price,
+    availability,
+  });
+  return response.data;
+};

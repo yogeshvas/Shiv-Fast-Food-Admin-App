@@ -24,7 +24,7 @@ const More = ({navigation}: any) => {
   if (isLoading || isRefetching) {
     return (
       <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-        <ActivityIndicator />
+        <ActivityIndicator size={'large'} />
       </View>
     );
   }

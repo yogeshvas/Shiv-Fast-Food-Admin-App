@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-               BuildableName = "shivff.app"
-               BlueprintName = "shivff"
-               ReferencedContainer = "container:shivff.xcodeproj">
+               BuildableName = "ShivFastFood.app"
+               BlueprintName = "ShivFastFood"
+               ReferencedContainer = "container:ShivFastFood.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "00E356ED1AD99517003FC87E"
-               BuildableName = "shivffTests.xctest"
-               BlueprintName = "shivffTests"
-               ReferencedContainer = "container:shivff.xcodeproj">
+               BuildableName = "ShivFastFoodTests.xctest"
+               BlueprintName = "ShivFastFoodTests"
+               ReferencedContainer = "container:ShivFastFood.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -55,9 +55,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "shivff.app"
-            BlueprintName = "shivff"
-            ReferencedContainer = "container:shivff.xcodeproj">
+            BuildableName = "ShivFastFood.app"
+            BlueprintName = "ShivFastFood"
+            ReferencedContainer = "container:ShivFastFood.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -72,9 +72,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "shivff.app"
-            BlueprintName = "shivff"
-            ReferencedContainer = "container:shivff.xcodeproj">
+            BuildableName = "ShivFastFood.app"
+            BlueprintName = "ShivFastFood"
+            ReferencedContainer = "container:ShivFastFood.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

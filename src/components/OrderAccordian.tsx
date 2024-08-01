@@ -8,10 +8,12 @@ import {
   Platform,
   UIManager,
   Image,
-  Alert,
+  Linking,
+  Modal,
 } from 'react-native';
 import moment from 'moment';
 import useUpdateOrderStaus from '../services/hooks/useUpdateOrderStaus';
+
 // Enable LayoutAnimation on Android
 if (
   Platform.OS === 'android' &&
@@ -21,6 +23,7 @@ if (
 }
 
 const OrderAccordion = ({data, refetch}: any) => {
+  const [modalVisible, setModalVisible] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const {
     mutate: changeStatus,
@@ -60,6 +63,22 @@ const OrderAccordion = ({data, refetch}: any) => {
     );
   };
 
+  const handleCancelOrder = () => {
+    changeStatus(
+      {orderId: data._id, status: 'CANCELLED'},
+      {
+        onSuccess: () => {
+          refetch();
+        },
+      },
+    );
+    setModalVisible(false);
+  };
+
+  const handlePhonePress = () => {
+    Linking.openURL(`tel:+91${data?.customerPhoneNo}`);
+  };
+
   return (
     <View style={styles.container}>
       <TouchableOpacity style={styles.touchable} onPress={toggleAccordion}>
@@ -81,7 +100,16 @@ const OrderAccordion = ({data, refetch}: any) => {
                         alignItems: 'center',
                         justifyContent: 'space-between',
                       }}>
-                      <Text style={styles.timeLabel}>Time</Text>
+                      <Text
+                        style={[
+                          {
+                            color: 'black',
+                            fontFamily: 'Space-Regular',
+                            fontSize: 10,
+                          },
+                        ]}>
+                        Time :
+                      </Text>
                       <Text style={styles.timeValue}>
                         {moment(data?.createdAt).format('hh:mm a')}
                       </Text>
@@ -95,6 +123,8 @@ const OrderAccordion = ({data, refetch}: any) => {
                             color:
                               data?.status === 'DELIVERED'
                                 ? '#87A96E'
+                                : data?.status === 'CANCELLED'
+                                ? '#FA7070'
                                 : '#596FB7',
                           },
                         ]}>
@@ -119,12 +149,17 @@ const OrderAccordion = ({data, refetch}: any) => {
               </View>
               <View style={styles.icons}>
                 {/* open modal */}
-                <TouchableOpacity>
-                  <Image
-                    style={styles.iconRotate}
-                    source={require('../assets/images/more-black.png')}
-                  />
-                </TouchableOpacity>
+                {data?.status === 'DELIVERED' ||
+                data?.status === 'CANCELLED' ? (
+                  <></>
+                ) : (
+                  <TouchableOpacity onPress={() => setModalVisible(true)}>
+                    <Image
+                      style={styles.iconRotate}
+                      source={require('../assets/images/more-black.png')}
+                    />
+                  </TouchableOpacity>
+                )}
                 <Image
                   style={[
                     styles.icon,
@@ -142,7 +177,14 @@ const OrderAccordion = ({data, refetch}: any) => {
               <View style={styles.timeContainer}>
                 <View style={styles.statusSection}>
                   <View style={{alignItems: 'center'}}>
-                    <Text style={styles.timeLabel}>Time</Text>
+                    <Text
+                      style={{
+                        fontFamily: 'Space-Regular',
+                        fontSize: 10,
+                        color: 'black ',
+                      }}>
+                      Time
+                    </Text>
                     <Text style={styles.timeValue}>
                       {moment(data?.createdAt).format('hh:mm A')}
                     </Text>
@@ -166,6 +208,8 @@ const OrderAccordion = ({data, refetch}: any) => {
                           color:
                             data?.status === 'DELIVERED'
                               ? '#87A96E'
+                              : data?.status === 'CANCELLED'
+                              ? '#FA7070'
                               : '#596FB7',
                         },
                       ]}>
@@ -193,6 +237,7 @@ const OrderAccordion = ({data, refetch}: any) => {
               <View>
                 {data?.items.map(food => (
                   <View
+                    key={food._id}
                     style={{
                       flexDirection: 'row',
                       justifyContent: 'space-between',
@@ -259,6 +304,41 @@ const OrderAccordion = ({data, refetch}: any) => {
                   </Text>
                 </View>
               </View>
+              {/* phone no */}
+              <View
+                style={{
+                  borderTopWidth: 1,
+                  borderColor: 'gray',
+                  marginTop: 5,
+                  paddingTop: 10,
+                  paddingHorizontal: 20,
+                }}>
+                <View>
+                  <Text style={{fontFamily: 'Space-Bold', color: 'gray'}}>
+                    Phone :
+                  </Text>
+                  <TouchableOpacity
+                    style={{
+                      flexDirection: 'row',
+                      gap: 5,
+                      alignItems: 'center',
+                    }}
+                    onPress={handlePhonePress}>
+                    <Text
+                      style={{
+                        fontFamily: 'Space-Bold',
+                        color: '#596FB7',
+                        fontSize: 16,
+                      }}>
+                      {data?.customerPhoneNo}
+                    </Text>
+                    <Image
+                      style={{height: 15, width: 15}}
+                      source={require('../assets/images/maximize.png')}
+                    />
+                  </TouchableOpacity>
+                </View>
+              </View>
               {/* address */}
 
               <View
@@ -283,14 +363,21 @@ const OrderAccordion = ({data, refetch}: any) => {
                   </Text>
                 </View>
               </View>
+
               {/* button */}
               <View>
                 <TouchableOpacity
                   onPress={handleUpdateStatus}
-                  disabled={data?.status === 'DELIVERED'} // Check for exact mat
+                  disabled={
+                    data?.status === 'DELIVERED' || data?.status === 'CANCELLED'
+                  } // Check for exact match
                   style={{
                     backgroundColor:
-                      data?.status === 'DELIVERED' ? 'gray' : '#597445',
+                      data?.status === 'DELIVERED'
+                        ? 'gray'
+                        : data?.status == 'CANCELLED'
+                        ? 'gray'
+                        : '#597445',
                     margin: 10,
                     padding: 10,
                     flexDirection: 'row',
@@ -325,12 +412,49 @@ const OrderAccordion = ({data, refetch}: any) => {
                       Delivered
                     </Text>
                   )}
+                  {data?.status === 'CANCELLED' && (
+                    <Text
+                      style={{
+                        fontFamily: 'Space-Bold',
+                        color: 'white',
+                      }}>
+                      Cancelled
+                    </Text>
+                  )}
                 </TouchableOpacity>
               </View>
             </View>
           )}
         </View>
       </TouchableOpacity>
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(false); // Close modal on back button press (Android)
+        }}>
+        <View style={styles.centeredView}>
+          <TouchableOpacity
+            style={styles.modalOverlay}
+            activeOpacity={1} // Disable default opacity behavior
+            onPress={() => setModalVisible(false)} // Close modal on overlay press
+          />
+          <View style={styles.modalView}>
+            <Text style={styles.modalText}>
+              Do you want to cancel this order?
+            </Text>
+
+            <TouchableOpacity
+              style={[styles.button, {backgroundColor: '#FA7070'}]}
+              onPress={handleCancelOrder}>
+              <Text style={[styles.textStyle, {fontFamily: 'Space-Bold'}]}>
+                Cancel Order
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -445,9 +569,9 @@ const styles = StyleSheet.create({
     paddingRight: 10,
   },
   timeLabel: {
-    fontFamily: 'Space-Medium',
+    fontFamily: 'Space-Regular',
     fontSize: 10,
-    color: 'gray ',
+    color: 'black ',
   },
   timeValue: {
     fontFamily: 'Space-Bold',
@@ -496,6 +620,58 @@ const styles = StyleSheet.create({
     marginTop: 6,
     borderTopWidth: 1,
     borderColor: 'gray',
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent black overlay
+  },
+  // modalOverlay: {
+  //   position: 'absolute',
+  //   top: 0,
+  //   bottom: 0,
+  //   left: 0,
+  //   right: 0,
+  // },
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 10,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  button: {
+    borderRadius: 4,
+    padding: 10,
+    marginTop: 10,
+  },
+  textStyle: {
+    color: 'white',
+    fontFamily: 'Space-Bold',
+    textAlign: 'center',
+  },
+  modalText: {
+    color: 'black',
+    marginBottom: 15,
+    fontFamily: 'Space-Bold',
+    textAlign: 'center',
+  },
+  modalOverlay: {
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent black overlay
   },
 });
 

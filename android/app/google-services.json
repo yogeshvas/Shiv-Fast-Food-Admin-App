@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "35561338001",
+    "project_id": "shiv-fast-food",
+    "storage_bucket": "shiv-fast-food.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:35561338001:android:4e3913ca34caf0358dbb30",
+        "android_client_info": {
+          "package_name": "com.shivff"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBfg-jbFGqBS91BUcW-j-tlnDaz0VFslEc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

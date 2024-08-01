@@ -21,7 +21,15 @@ const Delivered = () => {
   );
 
   if (isLoading) {
-    return <Text>Loading...</Text>;
+    return (
+      <>
+        <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+          <Text style={{color: 'black', fontFamily: 'Space-Bold'}}>
+            Loading...
+          </Text>
+        </View>
+      </>
+    );
   }
   const reversedOrders = [...data].reverse();
 
@@ -34,6 +42,11 @@ const Delivered = () => {
         renderItem={({item}) => (
           <OrderAccordion data={item} refetch={refetch} />
         )}
+        ListEmptyComponent={
+          <View style={styles.emptyContainer}>
+            <Text style={styles.emptyText}>No Accepted Orders</Text>
+          </View>
+        }
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
