@@ -24,7 +24,9 @@ const All = () => {
     return (
       <>
         <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-          <Text style={{color: 'black'}}>Loading...</Text>
+          <Text style={{color: 'black', fontFamily: 'Space-Bold'}}>
+            Loading...
+          </Text>
         </View>
       </>
     );

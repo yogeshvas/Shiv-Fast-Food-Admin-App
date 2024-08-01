@@ -108,6 +108,7 @@ const MenuCards = ({data, refetch}: any) => {
               color: 'black',
               borderColor: 'gray',
               paddingHorizontal: 10,
+              fontFamily: 'Space-Medium',
             }}
           />
         </View>

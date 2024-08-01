@@ -6,6 +6,7 @@ import {
   ScrollView,
   ActivityIndicator,
   RefreshControl,
+  Image,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {useQuery} from '@tanstack/react-query';
@@ -44,7 +45,12 @@ const Dashboard = () => {
             <Text style={styles.welcomeText}>Welcome</Text>
             <Text style={styles.restaurantName}>Shiv Dhaba Restaurant</Text>
           </View>
-          <View style={styles.profilePic}></View>
+          <View style={styles.profilePic}>
+            <Image
+              style={{width: 40, height: 40}}
+              source={require('../assets/images/user.png')}
+            />
+          </View>
         </View>
       </LinearGradient>
       {isLoading ? (
