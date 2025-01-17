@@ -7,46 +7,59 @@ import {
   TouchableOpacity,
   ActivityIndicator,
 } from 'react-native';
-import React, {useState} from 'react';
-import useGetKitchenStatus from '../services/hooks/useGetKitchenStatus';
-import useUpdateOrderStaus from '../services/hooks/useUpdateOrderStaus';
-import useUpdateKitchenStatus from '../services/hooks/useUpdateKitchenStatus';
+import React, {useState, useEffect} from 'react';
+import axios from 'axios';
 
 const More = ({navigation}: any) => {
-  const {data, isLoading, refetch, isRefetching} = useGetKitchenStatus();
+  const [isLoading, setIsLoading] = useState(true);
+  const [kitchenData, setKitchenData] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
-  const {
-    mutate: updateStatus,
-    isPending,
-    isError,
-    error,
-  } = useUpdateKitchenStatus();
-  if (isLoading || isRefetching) {
+  const [updateLoading, setUpdateLoading] = useState(false);
+
+  const fetchKitchenStatus = async () => {
+    try {
+      setIsLoading(true);
+      const response = await axios.get(
+        'https://shiv-ff.vercel.app/api/kitchen',
+      );
+      setKitchenData({open: response.data.isOpen});
+    } catch (error) {
+      console.error('Error fetching kitchen status:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleUpdateStatus = async () => {
+    try {
+      setUpdateLoading(true);
+      const newStatus = !kitchenData?.open;
+
+      await axios.put('https://shiv-phi.vercel.app/api/kitchen', {
+        status: newStatus,
+      });
+
+      // Refetch the kitchen status after update
+      await fetchKitchenStatus();
+      setModalVisible(false);
+    } catch (error) {
+      console.error('Error updating kitchen status:', error);
+    } finally {
+      setUpdateLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchKitchenStatus();
+  }, []);
+
+  if (isLoading) {
     return (
       <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
         <ActivityIndicator />
       </View>
     );
   }
-  const handleUpdateStatus = () => {
-    let kitchenStatus;
-    if (data?.open) {
-      kitchenStatus = false;
-    } else {
-      kitchenStatus = true;
-    }
-
-    updateStatus(
-      {kitchenStatus},
-      {
-        onSuccess: () => {
-          // Toggle modal visibility and refetch data
-          setModalVisible(!modalVisible);
-          refetch();
-        },
-      },
-    );
-  };
 
   return (
     <View style={{flex: 1, backgroundColor: 'white'}}>
@@ -91,7 +104,7 @@ const More = ({navigation}: any) => {
                 Restaurant
               </Text>
             </View>
-            {data.open ? (
+            {kitchenData?.open ? (
               <View
                 style={{
                   backgroundColor: '#b2cd9e',
@@ -128,29 +141,27 @@ const More = ({navigation}: any) => {
         </TouchableOpacity>
       </View>
       <TouchableOpacity onPress={() => navigation.navigate('menu-management')}>
-        <View>
-          <View
-            style={{
-              backgroundColor: 'white',
-              marginHorizontal: 20,
-              borderWidth: 1,
-              padding: 25,
-              borderColor: 'black',
-              borderRadius: 10,
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-            }}>
-            <View style={{flexDirection: 'row', alignItems: 'center', gap: 10}}>
-              <Image
-                resizeMode="contain"
-                style={{width: 15, height: 20}}
-                source={require('../assets/images/menu.png')}
-              />
-              <Text style={{fontFamily: 'Space-Bold', color: 'black'}}>
-                Menu Management
-              </Text>
-            </View>
+        <View
+          style={{
+            backgroundColor: 'white',
+            marginHorizontal: 20,
+            borderWidth: 1,
+            padding: 25,
+            borderColor: 'black',
+            borderRadius: 10,
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}>
+          <View style={{flexDirection: 'row', alignItems: 'center', gap: 10}}>
+            <Image
+              resizeMode="contain"
+              style={{width: 15, height: 20}}
+              source={require('../assets/images/menu.png')}
+            />
+            <Text style={{fontFamily: 'Space-Bold', color: 'black'}}>
+              Menu Management
+            </Text>
           </View>
         </View>
       </TouchableOpacity>
@@ -159,38 +170,29 @@ const More = ({navigation}: any) => {
         transparent={true}
         visible={modalVisible}
         onRequestClose={() => {
-          setModalVisible(false); // Close modal on back button press (Android)
+          setModalVisible(false);
         }}>
         <View style={styles.centeredView}>
           <TouchableOpacity
             style={styles.modalOverlay}
-            activeOpacity={1} // Disable default opacity behavior
-            onPress={() => setModalVisible(false)} // Close modal on overlay press
+            activeOpacity={1}
+            onPress={() => setModalVisible(false)}
           />
           <View style={styles.modalView}>
-            {data?.status ? (
-              <Text style={styles.modalText}>
-                Do You want close the kitchen?
-              </Text>
+            <Text style={styles.modalText}>
+              Do you want to {kitchenData?.open ? 'close' : 'open'} the kitchen?
+            </Text>
+            {updateLoading ? (
+              <ActivityIndicator color="#597445" />
             ) : (
-              <Text style={styles.modalText}>
-                Do You want to open the Kitchen?
-              </Text>
-            )}
-
-            {data?.open && (
               <TouchableOpacity
-                style={[styles.button, {backgroundColor: '#FA7070'}]}
+                style={[
+                  styles.button,
+                  {backgroundColor: kitchenData?.open ? '#FA7070' : '#597445'},
+                ]}
                 onPress={handleUpdateStatus}>
-                <Text style={styles.textStyle}>Close Kitchen</Text>
-              </TouchableOpacity>
-            )}
-            {!data.open && (
-              <TouchableOpacity
-                style={[styles.button, {backgroundColor: '#597445'}]}
-                onPress={handleUpdateStatus}>
-                <Text style={[styles.textStyle, {fontFamily: 'Space-Bold'}]}>
-                  Open Kitchen
+                <Text style={styles.textStyle}>
+                  {kitchenData?.open ? 'Close Kitchen' : 'Open Kitchen'}
                 </Text>
               </TouchableOpacity>
             )}
@@ -206,7 +208,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent black overlay
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalOverlay: {
     position: 'absolute',
